@@ -8,13 +8,15 @@ using UnityEngine.UI;
 public class ServerUnit : MonoBehaviour
 {
     public int index;
+    public string serverIp;
     public TextMeshProUGUI serverName;
     public Image contour;
 
     //ServerUnit Prefab ¼³Á¤
-    public void InitServerUnit(int index, string serverName)
+    public void InitServerUnit(int index, string serverName, string serverIp)
     {
         this.serverName.text = serverName;
+        this.serverIp = serverIp;
     }
 
     public void Select()

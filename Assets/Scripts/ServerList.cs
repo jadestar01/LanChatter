@@ -33,15 +33,15 @@ public class ServerList : MonoBehaviour
     public ServerUnit curServer = null;
 
     [Button]
-    public void SetServerList()
+    public void SetServerList(List<string> servers, List<string> serverIps)
     {
         serverUnits.Clear();
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < servers.Count; i++)
         {
             GameObject unit = Instantiate(serverUnit);
             unit.transform.SetParent(serverUnitParent);
             ServerUnit su =  unit.GetComponent<ServerUnit>();
-            su.InitServerUnit(i, i.ToString());
+            su.InitServerUnit(i, servers[i], serverIps[i]);
             serverUnits.Add(su);
         }
     }
@@ -59,16 +59,5 @@ public class ServerList : MonoBehaviour
     {
         for (int i = 0; i < serverUnits.Count; i++)
             serverUnits[i].Deselect();
-    }
-
-    [Button]
-    public void UDP()
-    {
-        UDPBroadcaster udp = new UDPBroadcaster();
-
-        for (int i = ServerInfo.minPort; i < ServerInfo.maxPort; i++)
-        {
-            udp.BroadcastMessage(i);
-        }    
     }
 }
