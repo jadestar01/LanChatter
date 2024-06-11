@@ -29,7 +29,7 @@ public class UDPClient: MonoBehaviour
     public void FindServer()
     {
         Debug.Log($"UDP Client Broadcast To Port : {CommunicationManager.Instance.udpServerPort}");
-        SendBroadcast("Hello from client");
+        SendBroadcast("AnyServer?");
     }
 
     private async void SendBroadcast(string message)

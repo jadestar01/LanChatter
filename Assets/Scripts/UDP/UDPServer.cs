@@ -51,13 +51,16 @@ public class UDPServer : MonoBehaviour
         string message = Encoding.UTF8.GetString(result.Buffer);
         Debug.Log("Received: [" + message + "] from " + result.RemoteEndPoint.Address.ToString());
 
+        //유니캐스트 답장
+        if (message != "AnyServer?" &&
+            CommunicationManager.Instance.isFindingServer &&
+            CommunicationManager.Instance.serverName != message)
+            CommunicationManager.Instance.AddNewServer(message, result.RemoteEndPoint.Address.ToString());
 
-        if (message == "I'm Here!" && CommunicationManager.Instance.isFindingServer)
-            CommunicationManager.Instance.AddNewServer(result.RemoteEndPoint.Address.ToString(), result.RemoteEndPoint.Address.ToString());
-
-        // Sending a unicast response
-        if (message != "I'm Here!" && CommunicationManager.Instance.isServerHost)
-            CommunicationManager.Instance.udpClient.SendUnicast("I'm Here!", result.RemoteEndPoint);
+        //브로드캐스트 답장
+        if (message == "AnyServer?" &&
+            CommunicationManager.Instance.isServerHost)
+            CommunicationManager.Instance.udpClient.SendUnicast(CommunicationManager.Instance.serverName, result.RemoteEndPoint);
     }
 
     void OnApplicationQuit()

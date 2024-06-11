@@ -9,6 +9,8 @@ using System.Threading;
 using UnityEngine;
 using System.Net.NetworkInformation;
 using JetBrains.Annotations;
+using UnityEngine.UI;
+using TMPro;
 
 public class CommunicationManager : MonoBehaviour
 {
@@ -18,10 +20,14 @@ public class CommunicationManager : MonoBehaviour
     public ServerList serverList;
     public UDPServer udpServer;
     public UDPClient udpClient;
+    public TMP_InputField serverNameField;
+    public TMP_InputField nickNameField;
+    public List<ContentSizeFitter> csfs;
 
     [Title("Current Statment")]
     public bool isServerHost = false;
     public bool isFindingServer = false;
+    public bool isJoinServer = false;
 
     [Title("Port Num")]
     public int udpClientPort = 7777;
@@ -37,6 +43,9 @@ public class CommunicationManager : MonoBehaviour
     private float loadingTime = 1f;
     private Coroutine cor;
 
+    public string serverName;
+    public string nickName;
+
     void Awake()
     {
         if (Instance == null)
@@ -50,6 +59,21 @@ public class CommunicationManager : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+        ResetCSF();
+    }
+
+    public void ResetCSF()
+    {
+        for(int i = 0; i < csfs.Count; i++)
+            LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)csfs[i].transform);
+    }
+
+    public void SetNickname() { if (!isJoinServer) nickName = nickNameField.text; }
+
+    public void SetServername() { if (!isJoinServer) serverName = serverNameField.text; }
+
     [Button]
     public void StartFindingServer()
     {
@@ -57,6 +81,7 @@ public class CommunicationManager : MonoBehaviour
         GetWifiIPAddress();
         isFindingServer = true;
         openServers.Clear();
+        openServerNames.Clear();
 
         if (cor != null)
             StopCoroutine(cor);
