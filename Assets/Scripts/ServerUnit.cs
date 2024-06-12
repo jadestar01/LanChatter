@@ -24,6 +24,7 @@ public class ServerUnit : MonoBehaviour
         ServerList.Instance.DeselctAll();
         contour.gameObject.SetActive(true);
         ServerList.Instance.curServer = this;
+        ServerList.Instance.selectedServer = index;
     }
 
     public void Deselect()

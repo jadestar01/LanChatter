@@ -5,10 +5,8 @@ using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Net;
 using System.Text;
-using System.Threading;
 using UnityEngine;
 using System.Net.NetworkInformation;
-using JetBrains.Annotations;
 using UnityEngine.UI;
 using TMPro;
 
@@ -20,9 +18,20 @@ public class CommunicationManager : MonoBehaviour
     public ServerList serverList;
     public UDPServer udpServer;
     public UDPClient udpClient;
+    public TCPServer tcpServer;
+    public TCPClient tcpClient;
     public TMP_InputField serverNameField;
     public TMP_InputField nickNameField;
     public List<ContentSizeFitter> csfs;
+    public ChatGenerator chatGenerator;
+    public TextMeshProUGUI serverTitle;
+    public Image block;
+
+    [Title("Buttons")]
+    public Button createServer;
+    public Button exitServer;
+    public Button findServer;
+    public Button connectServer;
 
     [Title("Current Statment")]
     public bool isServerHost = false;
@@ -32,13 +41,16 @@ public class CommunicationManager : MonoBehaviour
     [Title("Port Num")]
     public int udpClientPort = 7777;
     public int udpServerPort = 7778;
-    public int tcpClientPort = 7779;
-    public int tcpServerPort = 7780;
+    public int tcpServerPort = 7779;
 
     [Title("Datas")]
     public List<string> localAddressed = new List<string>();
     public List<string> openServerNames = new List<string>();
     public List<string> openServers = new List<string>();
+
+    [Title("Masking Word")]
+    public string mask = "|+|";
+    public string endMessage = "((!@)#!()@#(!)";
 
     private float loadingTime = 1f;
     private Coroutine cor;
@@ -58,6 +70,79 @@ public class CommunicationManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
+
+
+    //클라이언트 입장 시
+    public void OnEnter()
+    {
+        block.gameObject.SetActive(true);
+
+        serverTitle.text = serverList.curServer.serverName.text;
+
+        serverNameField.interactable = false;
+        nickNameField.interactable = false;
+
+        createServer.interactable = false;
+        exitServer.interactable = true;
+        findServer.interactable = false;
+        connectServer.interactable = false;
+    }
+
+    //클라이언트 나갈 시
+    public void OnExit()
+    {
+        Debug.Log("Called On Exit");
+
+        block.gameObject.SetActive(false);
+
+        serverTitle.text = "";
+        chatGenerator.ClearChat();
+
+        serverNameField.interactable = true;
+        nickNameField.interactable = true;
+
+        createServer.interactable = true;
+        exitServer.interactable = false;
+        findServer.interactable = true;
+        connectServer.interactable = true;
+    }
+
+    public void AmIHost(bool host)
+    {
+        //서버 열 때,
+        if (host)
+        {
+            block.gameObject.SetActive(true);
+
+            serverTitle.text = serverName;
+            chatGenerator.ClearChat();
+
+            serverNameField.interactable = false;
+            nickNameField.interactable = false;
+
+            createServer.interactable = true;
+            exitServer.interactable = false;
+            findServer.interactable = false;
+            connectServer.interactable = false;
+        }
+        //서버 닫을 때,
+        else
+        {
+            block.gameObject.SetActive(false);
+
+            serverTitle.text = "";
+            chatGenerator.ClearChat();
+
+            serverNameField.interactable = true;
+            nickNameField.interactable = true;
+
+            createServer.interactable = true;
+            exitServer.interactable = false;
+            findServer.interactable = true;
+            connectServer.interactable = true;
+        }
+    }
+
 
     private void Start()
     {

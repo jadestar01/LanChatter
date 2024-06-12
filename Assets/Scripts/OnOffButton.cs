@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class OnOffButton : MonoBehaviour
 {
+    public TCPServer server;
     public TextMeshProUGUI text;
     public Image image;
 
@@ -27,16 +28,19 @@ public class OnOffButton : MonoBehaviour
         isOn = !isOn;
 
         CommunicationManager.Instance.isServerHost = isOn;
+        CommunicationManager.Instance.AmIHost(isOn);
 
         if (isOn)
         {
             text.text = onText;
             image.color = onColor;
+            server.InitServer();
         }
         else
         {
             text.text = offText; 
             image.color = offColor;
+            server.StopServer();
         }
     }
 }

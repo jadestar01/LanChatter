@@ -28,9 +28,12 @@ public class ServerList : MonoBehaviour
     public Transform serverUnitParent;
     public GameObject serverUnit;
     public List<ServerUnit> serverUnits = new List<ServerUnit>();
-    public int selectedServer = 0;
+    public int selectedServer = -1;
 
     public ServerUnit curServer = null;
+
+    public bool HasSelectedServer() { return selectedServer != -1 && serverUnits.Count > selectedServer; }
+    public string GetServerIP() { return serverUnits[selectedServer].serverIp; }
 
     [Button]
     public void SetServerList(List<string> servers, List<string> serverIps)
@@ -49,7 +52,7 @@ public class ServerList : MonoBehaviour
     [Button]
     public void ResetServerList()
     {
-        selectedServer = 0;
+        selectedServer = -1;
         serverUnits.Clear();
         for (int i = 0; i < serverUnitParent.childCount; i++)
             Destroy(serverUnitParent.GetChild(serverUnitParent.childCount - 1 - i).gameObject);
