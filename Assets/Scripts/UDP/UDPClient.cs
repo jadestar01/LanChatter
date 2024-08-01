@@ -21,8 +21,11 @@ public class UDPClient: MonoBehaviour
     public void InitUDPClient()
     {
         Debug.Log($"UDP Client Online From Port : {CommunicationManager.Instance.udpClientPort}");
-        udpClient = new UdpClient(CommunicationManager.Instance.udpClientPort);
-        udpClient.EnableBroadcast = true;
+        if (udpClient == null)
+        {
+            udpClient = new UdpClient(CommunicationManager.Instance.udpClientPort);
+            udpClient.EnableBroadcast = true;
+        }
     }
 
     [Button]
@@ -37,6 +40,7 @@ public class UDPClient: MonoBehaviour
         IPEndPoint remoteEP = new IPEndPoint(IPAddress.Broadcast, CommunicationManager.Instance.udpServerPort);
         byte[] bytesToSend = Encoding.UTF8.GetBytes(message);
         await udpClient.SendAsync(bytesToSend, bytesToSend.Length, remoteEP);
+        Debug.Log("Broadcast");
     }
 
     public async void SendUnicast(string message, IPEndPoint ep)

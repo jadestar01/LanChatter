@@ -21,9 +21,12 @@ public class UDPServer : MonoBehaviour
     public void InitUDPServer()
     {
         Debug.Log($"UDP Server Online From Port : {CommunicationManager.Instance.udpServerPort}");
-        udpClient = new UdpClient(CommunicationManager.Instance.udpServerPort);
-        udpClient.EnableBroadcast = true;
-        ListenAsync();
+        if (udpClient == null)
+        {
+            udpClient = new UdpClient(CommunicationManager.Instance.udpServerPort);
+            udpClient.EnableBroadcast = true;
+            ListenAsync();
+        }
     }
 
     private async void ListenAsync()
